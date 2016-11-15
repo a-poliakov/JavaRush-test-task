@@ -11,7 +11,7 @@
 <h1>Our users list.</h1>
 
 <p>
-    <a href="<s:url value="/addUser"/>">Добавить нового пользователя</a>
+    <a href="<s:url value="/add"/>">Добавить нового пользователя</a>
 </p>
 
 <spring:form  method="get" modelAttribute="searchText" action="">

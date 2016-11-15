@@ -1,10 +1,13 @@
 package javarush.test.controller;
 
 import javarush.test.dao.UserDao;
+import javarush.test.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
@@ -31,9 +34,24 @@ public class UserController {
         return "index";
     }
 
-    @RequestMapping("/add")
-    public String addUser(Model model){
+    @RequestMapping(value = "/add", method = RequestMethod.GET)
+    public String addUserGet(Model model, @RequestParam(value = "id", required = false) Integer userId){
+        User user;
+        if(userId == null){
+            user = new User();
+        } else{
+            user = userDao.getById(userId);
+        }
+        model.addAttribute("user", user);
         return "user_add";
+    }
+
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    public String addUserPost(Model model, @ModelAttribute User modelUser){
+        if(modelUser.getId() != 0){
+            userDao.saveOrUpdate(modelUser);
+        }
+        return "redirect:/";
     }
 
     @RequestMapping("/remove")
