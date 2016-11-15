@@ -15,7 +15,7 @@
 </p>
 
 <spring:form  method="get" modelAttribute="searchText" action="">
-    Поиск: <input name="name" class="form-control" placeholder="Введите имя пользователя"/><button type="submit" class="btn btn-success">Найти</button>
+    Поиск: <input name="searchText" class="form-control" placeholder="Введите имя пользователя"/><button type="submit" class="btn btn-success">Найти</button>
 </spring:form>
 
 <table class="block">

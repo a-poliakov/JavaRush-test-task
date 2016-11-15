@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,17 +22,34 @@ public class UserController {
     @RequestMapping("/")
     public String hello(Model model,
                         @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
-                        @RequestParam(value = "searchText", required = false) String searchText){
+                        @RequestParam(value = "searchText", required = false) String searchText) throws UnsupportedEncodingException {
         if (pageNumber == null) {
             pageNumber = 0;
         }
-        int pageCount =  userDao.getUserPagesCount();
-        model.addAttribute("countOFPages", pageCount);
-        model.addAttribute("currentPage", pageNumber);
-        model.addAttribute("users", userDao.getUsersOnPage(pageNumber));
-        model.addAttribute("pagination", createPagination(pageNumber, pageCount));
-        model.addAttribute("searchText", searchText);
+        if (searchText != null) {
+            List<User> users = userDao.getByName(searchText);
+            int pageCount = userDao.getUserPagesCount(users.size());
+            model.addAttribute("countOFPages", pageCount);
+            model.addAttribute("currentPage", pageNumber);
+            model.addAttribute("users", getSubList(users, pageNumber*UserDao.NEWS_ON_PAGE_COUNT, (pageNumber+1)*UserDao.NEWS_ON_PAGE_COUNT));
+            model.addAttribute("pagination", createPagination(pageNumber, pageCount));
+            model.addAttribute("searchText", searchText);
+        } else {
+            int pageCount = userDao.getUserPagesCount();
+            model.addAttribute("countOFPages", pageCount);
+            model.addAttribute("currentPage", pageNumber);
+            model.addAttribute("users", userDao.getUsersOnPage(pageNumber));
+            model.addAttribute("pagination", createPagination(pageNumber, pageCount));
+            model.addAttribute("searchText", "");
+        }
         return "index";
+    }
+
+    public List<User> getSubList(List<User> list, int startIndex, int endIndex){
+        if(list.size() < 1){
+            return new ArrayList<User>();
+        }
+        return list.size() < endIndex ? list.subList(startIndex, list.size()-1) : list.subList(startIndex, endIndex);
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.GET)
