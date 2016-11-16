@@ -66,9 +66,7 @@ public class UserController {
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public String addUserPost(Model model, @ModelAttribute User modelUser){
-        if(modelUser.getId() != 0){
-            userDao.saveOrUpdate(modelUser);
-        }
+        userDao.saveOrUpdate(modelUser);
         return "redirect:/";
     }
 

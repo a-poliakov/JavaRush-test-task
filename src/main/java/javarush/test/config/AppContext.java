@@ -1,6 +1,7 @@
 package javarush.test.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 
@@ -11,4 +12,9 @@ public class AppContext {
 
     @Autowired
     HibernateConfig hibernateConfig;
+
+    @Bean
+    public AppInitialiser dataLoader(){
+        return new AppInitialiser();
+    }
 }
